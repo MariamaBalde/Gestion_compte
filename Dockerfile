@@ -38,7 +38,7 @@ RUN composer update --no-dev --optimize-autoloader
 RUN npm install && npm run build
 
 # Generate application key
-RUN php artisan key:generate
+RUN php artisan key:generate --show
 
 # Set permissions for storage and bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
