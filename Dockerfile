@@ -43,6 +43,12 @@ RUN php artisan key:generate --show
 # Set permissions for storage and bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
+
+# Configure Apache to serve from /var/www/html/public
+RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
 # Expose port 80
 EXPOSE 80
 
