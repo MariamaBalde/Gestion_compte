@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql pdo_pgsql pgsql mbstring exif pcntl bcmath gd
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -47,12 +47,12 @@ RUN echo "APP_NAME=Laravel" > /var/www/html/.env && \
     echo "APP_DEBUG=false" >> /var/www/html/.env && \
     echo "APP_URL=https://gestion-compte-1izl.onrender.com" >> /var/www/html/.env && \
     echo "LOG_CHANNEL=stack" >> /var/www/html/.env && \
-    echo "DB_CONNECTION=mysql" >> /var/www/html/.env && \
-    echo "DB_HOST=\${MYSQL_HOST}" >> /var/www/html/.env && \
-    echo "DB_PORT=\${MYSQL_PORT}" >> /var/www/html/.env && \
-    echo "DB_DATABASE=\${MYSQL_DATABASE}" >> /var/www/html/.env && \
-    echo "DB_USERNAME=\${MYSQL_USER}" >> /var/www/html/.env && \
-    echo "DB_PASSWORD=\${MYSQL_PASSWORD}" >> /var/www/html/.env && \
+    echo "DB_CONNECTION=pgsql" >> /var/www/html/.env && \
+    echo "DB_HOST=\${PGHOST}" >> /var/www/html/.env && \
+    echo "DB_PORT=\${PGPORT}" >> /var/www/html/.env && \
+    echo "DB_DATABASE=\${PGDATABASE}" >> /var/www/html/.env && \
+    echo "DB_USERNAME=\${PGUSER}" >> /var/www/html/.env && \
+    echo "DB_PASSWORD=\${PGPASSWORD}" >> /var/www/html/.env && \
     echo "CACHE_DRIVER=redis" >> /var/www/html/.env && \
     echo "QUEUE_CONNECTION=database" >> /var/www/html/.env && \
     echo "SESSION_DRIVER=database" >> /var/www/html/.env && \
