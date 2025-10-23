@@ -17,8 +17,9 @@ return [
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
+     'allowed_methods' => ['*'],
 
-     'allowed_origins' => ['http://api.balde.mariama.com'],
+     'allowed_origins' => ['http://localhost:3000','http://api.balde.mariama.com'],
 
      'allowed_origins_patterns' => [],
 
@@ -26,7 +27,6 @@ return [
 
      'exposed_headers' => [],
 
-     'allowed_methods' => ['*'],
 
      'max_age' => 0,
 

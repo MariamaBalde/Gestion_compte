@@ -32,6 +32,18 @@ class Compte extends Model
     protected $casts = [
     ];
 
+    protected static function boot()
+{
+    parent::boot();
+
+    static::creating(function ($compte) {
+        if (empty($compte->numero_compte)) {
+            $compte->numero_compte = 'C' . str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
+        }
+    });
+}
+
+
     // protected static function boot()
     // {
     //     parent::boot();

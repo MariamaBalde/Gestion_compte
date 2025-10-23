@@ -1,25 +1,33 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class RatingMiddleware
 {
-    public function handle(Request $request, Closure $next)
+    /**
+     * Si l'utilisateur non-auth : on peut limiter par IP.
+     * Ici on stocke compteur dans le cache.
+     */
+    public function handle(Request $request, Closure $next, $limit = 10)
     {
-        $response = $next($request);
+        $key = 'rating:' . ($request->user()?->id ?? $request->ip());
 
-        if ($response->getStatusCode() == 429) { // Rate limit exceeded
-            Log::info('Rate limit atteint pour l\'utilisateur', [
-                'user_id' => auth()->id(),
-                'ip' => $request->ip(),
-                'url' => $request->fullUrl(),
-            ]);
+        $count = Cache::get($key, 0);
+        $count++;
+        Cache::put($key, $count, now()->addHour()); // expire après 1 heure
+
+        if ($count >= (int)$limit) {
+            // enregistrer dans un log ou base de données
+            Log::info("Rating limit atteint pour: {$key}", ['count' => $count]);
+
+            // tu peux émettre un événement, sauvegarder en BDD, etc.
         }
 
-        return $response;
+        return $next($request);
     }
 }
+

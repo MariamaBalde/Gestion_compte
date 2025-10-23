@@ -21,6 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Lister tous les comptes (Admin) ou comptes du client (Client)
 // GET /api/v1/comptes?page=1&limit=10&type=epargne&statut=actif&search=...&sort=dateCreation&order=desc
-Route::prefix('v1')->group(function(){
-    Route::apiResource('comptes',CompteController::class)->only((['index']));
+Route::prefix('v1')->middleware('rating:10')->group(function(){
+        Route::get('comptes', [CompteController::class, 'index']);
 });

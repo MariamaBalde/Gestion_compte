@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-trait ApiResponseTrait
+trait ApiResponse
 {
     protected function successResponse($data = null, string $message = 'Success', int $code = 200)
     {
