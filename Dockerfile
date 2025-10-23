@@ -38,7 +38,27 @@ RUN composer update --no-dev --optimize-autoloader
 RUN npm install && npm run build
 
 # Generate application key
-RUN php artisan key:generate --show
+RUN php artisan key:generate --show | grep -o 'base64:[^"]*' | cut -d':' -f2 > /tmp/app_key.txt
+
+# Create .env file with production settings
+RUN echo "APP_NAME=Laravel" > /var/www/html/.env && \
+    echo "APP_ENV=production" >> /var/www/html/.env && \
+    echo "APP_KEY=base64:$(cat /tmp/app_key.txt)" >> /var/www/html/.env && \
+    echo "APP_DEBUG=false" >> /var/www/html/.env && \
+    echo "APP_URL=https://gestion-compte-1izl.onrender.com" >> /var/www/html/.env && \
+    echo "LOG_CHANNEL=stack" >> /var/www/html/.env && \
+    echo "DB_CONNECTION=mysql" >> /var/www/html/.env && \
+    echo "DB_HOST=\${MYSQL_HOST}" >> /var/www/html/.env && \
+    echo "DB_PORT=\${MYSQL_PORT}" >> /var/www/html/.env && \
+    echo "DB_DATABASE=\${MYSQL_DATABASE}" >> /var/www/html/.env && \
+    echo "DB_USERNAME=\${MYSQL_USER}" >> /var/www/html/.env && \
+    echo "DB_PASSWORD=\${MYSQL_PASSWORD}" >> /var/www/html/.env && \
+    echo "CACHE_DRIVER=redis" >> /var/www/html/.env && \
+    echo "QUEUE_CONNECTION=database" >> /var/www/html/.env && \
+    echo "SESSION_DRIVER=database" >> /var/www/html/.env && \
+    echo "REDIS_HOST=\${REDIS_HOST}" >> /var/www/html/.env && \
+    echo "REDIS_PORT=\${REDIS_PORT}" >> /var/www/html/.env && \
+    echo "REDIS_PASSWORD=\${REDIS_PASSWORD}" >> /var/www/html/.env
 
 # Set permissions for storage and bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
@@ -51,6 +71,9 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 
 # Expose port 80
 EXPOSE 80
+
+# Run database migrations
+RUN php artisan migrate --force
 
 # Start Apache
 CMD ["apache2-foreground"]
