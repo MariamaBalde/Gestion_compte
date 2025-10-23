@@ -27,11 +27,16 @@ return new class extends Migration
                   ->cascadeOnDelete();
         });
 
-     
+       Schema::table('compte', function (Blueprint $table) {
+            $table->softDeletes(); // ajoute deleted_at
+        });
     }
 
     public function down(): void
     {
+         Schema::table('compte', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
         Schema::dropIfExists('compte');
       
     }

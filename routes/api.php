@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\CompteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+// Lister tous les comptes (Admin) ou comptes du client (Client)
+// GET /api/v1/comptes?page=1&limit=10&type=epargne&statut=actif&search=...&sort=dateCreation&order=desc
+Route::prefix('v1')->group(function(){
+    Route::apiResource('comptes',CompteController::class)->only((['index']));
 });
