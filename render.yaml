@@ -1,0 +1,64 @@
+services:
+  - type: web
+    name: laravel-api
+    runtime: docker
+    buildCommand: docker build -t laravel-api .
+    startCommand: docker run -p $PORT:80 laravel-api
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromDatabase:
+          name: laravel-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: laravel-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: laravel-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: laravel-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: laravel-db
+          property: password
+      - key: CACHE_DRIVER
+        value: redis
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: SESSION_DRIVER
+        value: database
+      - key: REDIS_HOST
+        fromService:
+          type: redis
+          name: laravel-redis
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          type: redis
+          name: laravel-redis
+          property: port
+      - key: REDIS_PASSWORD
+        fromService:
+          type: redis
+          name: laravel-redis
+          property: password
+
+  - type: pserv
+    name: laravel-redis
+    runtime: redis
+
+databases:
+  - name: laravel-db
+    databaseName: laravel
+    user: laravel
+    plan: starter
