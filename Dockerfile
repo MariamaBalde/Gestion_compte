@@ -72,8 +72,9 @@ RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available
 # Expose port 80
 EXPOSE 80
 
-# Run database migrations
-RUN php artisan migrate --force
+# Copy start script
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Start the application
+CMD ["/usr/local/bin/start.sh"]
