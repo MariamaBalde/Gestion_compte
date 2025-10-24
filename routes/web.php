@@ -17,6 +17,7 @@ Route::get('/', function () {
     return response()->json([
         'message' => 'API de gestion de comptes - Bienvenue',
         'version' => '1.0.0',
+        'status' => 'operational',
         'documentation' => url('/api/documentation'),
         'endpoints' => [
             'comptes' => url('/api/v1/comptes'),
