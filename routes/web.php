@@ -18,7 +18,7 @@ Route::get('/', function () {
         'message' => 'API de gestion de comptes - Bienvenue',
         'version' => '1.0.0',
         'status' => 'operational',
-        'documentation' => url('/api/docs'),
+        'documentation' => url('/api/documentation'),
         'endpoints' => [
             'comptes' => url('/api/v1/comptes'),
         ]
@@ -28,6 +28,10 @@ Route::get('/', function () {
 Route::get('/api/docs', function () {
     return view('swagger');
 });
+
+Route::get('/api/documentation', function () {
+    return view('swagger');
+})->name('l5-swagger.default.api');
 
 Route::get('/api-docs.json', function () {
     return response()->json([
