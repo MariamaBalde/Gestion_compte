@@ -14,7 +14,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return response()->json([
+        'message' => 'API de gestion de comptes - Bienvenue',
+        'version' => '1.0.0',
+        'documentation' => url('/api/documentation'),
+        'endpoints' => [
+            'comptes' => url('/api/v1/comptes'),
+        ]
+    ]);
 });
 
 Route::get('/api/documentation', function () {

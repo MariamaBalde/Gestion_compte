@@ -96,7 +96,5 @@ public function clientByPhone(Builder $query, $telephone): Builder
     public function client()
     {
         return $this->belongsTo(Client::class, 'client_id');
-        return $this->hasMany(Transaction::class, 'compte_id');
-
     }
 }
