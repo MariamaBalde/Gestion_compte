@@ -18,21 +18,14 @@ Route::get('/', function () {
         'message' => 'API de gestion de comptes - Bienvenue',
         'version' => '1.0.0',
         'status' => 'operational',
-        'documentation' => url('/api/documentation'),
+        'documentation' => url('/api/docs'),
         'endpoints' => [
             'comptes' => url('/api/v1/comptes'),
         ]
     ]);
 });
 
-Route::get('/api/documentation', function () {
-    $documentation = 'default';
-    $urlToDocs = route('l5-swagger.'.$documentation.'.docs');
-    $configUrl = config('l5-swagger.defaults.additional_config_url');
-    $validatorUrl = config('l5-swagger.defaults.validator_url');
-    $operationsSorter = config('l5-swagger.defaults.operations_sort');
-    $useAbsolutePath = config('l5-swagger.documentations.'.$documentation.'.paths.use_absolute_path', false);
-
-    return view('l5-swagger::index', compact('documentation', 'urlToDocs', 'configUrl', 'validatorUrl', 'operationsSorter', 'useAbsolutePath'));
+Route::get('/api/docs', function () {
+    return view('swagger');
 });
 

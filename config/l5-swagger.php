@@ -16,7 +16,7 @@ return [
                  */
                 'api' => 'api/documentation',
             ],
-            'basePath' => env('L5_SWAGGER_BASE_PATH', 'https://gestion-compte-1izl.onrender.com/api/v1'),
+            'basePath' => '/api/v1',
 
             'paths' => [
                 'docs_json' => 'api-docs.json',
@@ -29,12 +29,11 @@ return [
                  * Edit to include full URL in ui for assets
                  */
                 'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
-                'host' => env('L5_SWAGGER_CONST_HOST', 'https://gestion-compte-1izl.onrender.com'),
 
                 /*
                 * Edit to set path where swagger ui assets should be stored
                 */
-                'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
+                'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'https://unpkg.com/swagger-ui-dist@5.10.3/'),
 
                 /*
                  * File name of the generated json documentation file
