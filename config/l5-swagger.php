@@ -16,7 +16,7 @@ return [
                  */
                 'api' => 'api/documentation',
             ],
-            'basePath' => '/api/v1',
+            'basePath' => env('L5_SWAGGER_BASE_PATH', 'https://gestion-compte-1izl.onrender.com/api/v1'),
 
             'paths' => [
                 'docs_json' => 'api-docs.json',
@@ -28,7 +28,8 @@ return [
                 /*
                  * Edit to include full URL in ui for assets
                  */
-                'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', false),
+                'use_absolute_path' => env('L5_SWAGGER_USE_ABSOLUTE_PATH', true),
+                'host' => env('L5_SWAGGER_CONST_HOST', 'https://gestion-compte-1izl.onrender.com'),
 
                 /*
                 * Edit to set path where swagger ui assets should be stored
@@ -320,7 +321,7 @@ return [
          * Constants which can be used in annotations
          */
         'constants' => [
-            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'https://gestion-compte-1izl.onrender.com'),
         ],
     ],
 ];

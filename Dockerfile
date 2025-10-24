@@ -47,6 +47,7 @@ RUN echo "APP_NAME=Laravel" > /var/www/html/.env && \
     echo "APP_KEY=base64:$(cat /tmp/app_key.txt)" >> /var/www/html/.env && \
     echo "APP_DEBUG=true" >> /var/www/html/.env && \
     echo "APP_URL=https://gestion-compte-1izl.onrender.com" >> /var/www/html/.env && \
+    echo "L5_SWAGGER_CONST_HOST=https://gestion-compte-1izl.onrender.com" >> /var/www/html/.env && \
     echo "LOG_CHANNEL=stack" >> /var/www/html/.env && \
     echo "DB_CONNECTION=pgsql" >> /var/www/html/.env && \
     echo "DB_HOST=\${PGHOST}" >> /var/www/html/.env && \
