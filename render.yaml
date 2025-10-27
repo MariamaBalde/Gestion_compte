@@ -10,7 +10,7 @@ services:
       - key: APP_KEY
         generateValue: true
       - key: DB_CONNECTION
-        value: mysql
+        value: pgsql
       - key: DB_HOST
         fromDatabase:
           name: laravel-db

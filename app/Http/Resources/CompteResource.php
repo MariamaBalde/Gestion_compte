@@ -13,7 +13,7 @@ class CompteResource extends JsonResource
         return [
             'id' => $this->id,
             'numeroCompte' => $this->numero_compte,
-            'titulaire' => optional($this->client)->nom ?? optional($this->client)->name ?? null,
+            'titulaire' => optional($this->client)->titulaire ?? null,
             'type' => $this->type_compte,
             'solde' => (float) $this->solde,
             'devise' => $this->devise,

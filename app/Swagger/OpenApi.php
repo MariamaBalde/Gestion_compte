@@ -10,8 +10,9 @@ namespace App\Swagger;
  * )
  *
  * @OA\Server(
- *     url="/api/v1",
+ *     url="http://api.balde.mariama.com/api/v1",
  *     description="Serveur principal"
  * )
  */
+
 class OpenApi {}

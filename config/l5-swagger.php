@@ -16,7 +16,7 @@ return [
                  */
                 'api' => 'api/documentation',
             ],
-            'basePath' => '/api/v1',
+            'basePath' => '/mariama/v1',
 
             'paths' => [
                 'docs_json' => 'api-docs.json',
@@ -33,7 +33,7 @@ return [
                 /*
                 * Edit to set path where swagger ui assets should be stored
                 */
-                'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
+                'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'https://unpkg.com/swagger-ui-dist@5.10.3/'),
 
                 /*
                  * File name of the generated json documentation file
@@ -320,7 +320,7 @@ return [
          * Constants which can be used in annotations
          */
         'constants' => [
-            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'https://api.balde.mariama.com/api/v1'),
         ],
     ],
 ];
