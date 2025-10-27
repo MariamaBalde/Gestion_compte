@@ -14,17 +14,83 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return response()->json([
+        'message' => 'API de gestion de comptes - Bienvenue',
+        'version' => '1.0.0',
+        'status' => 'operational',
+        'documentation' => url('/api/documentation'),
+        'endpoints' => [
+            'comptes' => url('/api/v1/comptes'),
+        ]
+    ]);
+});
+
+Route::get('/api/docs', function () {
+    return view('swagger');
 });
 
 Route::get('/api/documentation', function () {
-    $documentation = 'default';
-    $urlToDocs = route('l5-swagger.'.$documentation.'.docs');
-    $configUrl = config('l5-swagger.defaults.additional_config_url');
-    $validatorUrl = config('l5-swagger.defaults.validator_url');
-    $operationsSorter = config('l5-swagger.defaults.operations_sort');
-    $useAbsolutePath = config('l5-swagger.documentations.'.$documentation.'.paths.use_absolute_path', false);
+    return view('swagger');
+})->name('l5-swagger.default.api');
 
-    return view('l5-swagger::index', compact('documentation', 'urlToDocs', 'configUrl', 'validatorUrl', 'operationsSorter', 'useAbsolutePath'));
+Route::get('/api-docs.json', function () {
+    return response()->json([
+        'openapi' => '3.0.0',
+        'info' => [
+            'title' => 'API de gestion de comptes',
+            'version' => '1.0.0',
+            'description' => 'Documentation de l\'API bancaire'
+        ],
+        'servers' => [
+            [
+                'url' => 'http://localhost:8000/mariamabalde/v1',
+                'description' => 'Serveur local'
+            ]
+        ],
+        'paths' => [
+            '/comptes' => [
+                'get' => [
+                    'summary' => 'Lister les comptes',
+                    'parameters' => [
+                        [
+                            'name' => 'page',
+                            'in' => 'query',
+                            'schema' => ['type' => 'integer'],
+                            'description' => 'Numéro de page'
+                        ],
+                        [
+                            'name' => 'limit',
+                            'in' => 'query',
+                            'schema' => ['type' => 'integer'],
+                            'description' => 'Nombre d\'éléments par page'
+                        ],
+                        [
+                            'name' => 'type',
+                            'in' => 'query',
+                            'schema' => ['type' => 'string'],
+                            'description' => 'Filtrer par type de compte'
+                        ],
+                        [
+                            'name' => 'statut',
+                            'in' => 'query',
+                            'schema' => ['type' => 'string'],
+                            'description' => 'Filtrer par statut'
+                        ],
+                        [
+                            'name' => 'search',
+                            'in' => 'query',
+                            'schema' => ['type' => 'string'],
+                            'description' => 'Recherche par numéro ou titulaire'
+                        ]
+                    ],
+                    'responses' => [
+                        '200' => [
+                            'description' => 'Liste des comptes récupérée avec succès'
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ]);
 });
 
