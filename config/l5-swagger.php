@@ -16,7 +16,7 @@ return [
                  */
                 'api' => 'api/documentation',
             ],
-            'basePath' => '/api/v1',
+            'basePath' => '/mariama/v1',
 
             'paths' => [
                 'docs_json' => 'api-docs.json',

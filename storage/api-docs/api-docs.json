@@ -7,8 +7,8 @@
     },
     "servers": [
         {
-            "url": "/api/v1",
-            "description": "Serveur principal"
+            "url": "http://localhost:8000/mariama/v1",
+            "description": "Serveur local"
         }
     ],
     "paths": {

@@ -43,8 +43,8 @@ Route::get('/api-docs.json', function () {
         ],
         'servers' => [
             [
-                'url' => 'https://gestion-compte-1izl.onrender.com/api/v1',
-                'description' => 'Serveur de production'
+                'url' => 'http://localhost:8000/mariamabalde/v1',
+                'description' => 'Serveur local'
             ]
         ],
         'paths' => [

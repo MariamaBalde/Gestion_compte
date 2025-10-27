@@ -10,8 +10,8 @@ namespace App\Swagger;
  * )
  *
  * @OA\Server(
- *     url="/api/v1",
- *     description="Serveur principal"
+ *     url="http://localhost:8000/mariamabalde/v1",
+ *     description="Serveur local"
  * )
  */
 class OpenApi {}

@@ -16,7 +16,7 @@
     <script>
         window.onload = function() {
             const ui = SwaggerUIBundle({
-                url: 'https://gestion-compte-1izl.onrender.com/api-docs.json',
+                url: '/api-docs.json',
                 dom_id: '#swagger-ui',
                 deepLinking: true,
                 presets: [
