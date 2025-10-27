@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('rating:10')->group(function(){
         Route::prefix(config('balde.mariama'))->group(function() {
         Route::get('comptes', [CompteController::class, 'index']);
+        Route::post('comptes', [CompteController::class, 'store']);
         });
 });
 
