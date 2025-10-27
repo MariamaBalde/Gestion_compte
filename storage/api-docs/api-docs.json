@@ -7,8 +7,8 @@
     },
     "servers": [
         {
-            "url": "http://api.balde.mariama.com/api/v1",
-            "description": "Serveur principal"
+            "url": "http://127.0.0.1:8001/mariamabalde/v1",
+            "description": "Serveur local"
         }
     ],
     "paths": {
@@ -32,7 +32,7 @@
                     {
                         "name": "limit",
                         "in": "query",
-                        "description": "Nombre d’éléments",
+                        "description": "Nombre d'éléments",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -55,11 +55,160 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Recherche par titulaire ou numéro",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Tri (dateCreation, solde, titulaire)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Ordre (asc, desc)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Liste des comptes récupérée avec succès"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Comptes"
+                ],
+                "summary": "Créer un nouveau compte",
+                "operationId": "458db376a3bd23c52102bbd05cda318b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "client",
+                                    "type_compte",
+                                    "devise",
+                                    "statut"
+                                ],
+                                "properties": {
+                                    "client": {
+                                        "properties": {
+                                            "titulaire": {
+                                                "type": "string",
+                                                "example": "John Doe"
+                                            },
+                                            "nci": {
+                                                "type": "string",
+                                                "example": "123456789"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email",
+                                                "example": "john.doe@example.com"
+                                            },
+                                            "telephone": {
+                                                "type": "string",
+                                                "example": "+221771234567"
+                                            },
+                                            "adresse": {
+                                                "type": "string",
+                                                "example": "Dakar, Sénégal"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "type_compte": {
+                                        "type": "string",
+                                        "enum": [
+                                            "cheque",
+                                            "epargne",
+                                            "courant"
+                                        ],
+                                        "example": "cheque"
+                                    },
+                                    "devise": {
+                                        "type": "string",
+                                        "example": "XOF"
+                                    },
+                                    "statut": {
+                                        "type": "string",
+                                        "enum": [
+                                            "actif",
+                                            "inactif",
+                                            "suspendu"
+                                        ],
+                                        "example": "actif"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Compte créé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Compte créé avec succès"
+                                        },
+                                        "data": {
+                                            "description": "Données du compte créé",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erreur de validation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Erreur de validation"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
