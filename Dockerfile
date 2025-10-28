@@ -41,6 +41,9 @@ RUN npm install && npm run build
 # Generate application key
 RUN php artisan key:generate --show | grep -o 'base64:[^"]*' | cut -d':' -f2 > /tmp/app_key.txt
 
+# Generate Swagger documentation
+RUN php artisan l5-swagger:generate
+
 # Create .env file with production settings
 RUN echo "APP_NAME=Laravel" > /var/www/html/.env && \
     echo "APP_ENV=production" >> /var/www/html/.env && \
