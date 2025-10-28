@@ -5,8 +5,8 @@ return [
     'documentations' => [
         'default' => [
             'api' => [
-                'title' => 'API Banque - Documentation',
-                'description' => 'Documentation Swagger de l’API bancaire',
+                'title' => 'API RESTful Comptes Bancaires',
+                'description' => 'Documentation complète de l\'API RESTful pour la gestion des comptes bancaires',
                 'version' => '1.0.0',
             ],
 
@@ -16,15 +16,7 @@ return [
                  */
                 'api' => 'api/documentation',
             ],
-            'basePath' => '/',
-
             'paths' => [
-                'docs_json' => 'api-docs.json',
-                'docs_yaml' => 'api-docs.yaml',
-                'format_to_use_for_docs' => env('L5_FORMAT_TO_USE_FOR_DOCS', 'json'),
-                'annotations' => [
-                    base_path('app'),
-                ],
                 /*
                  * Edit to include full URL in ui for assets
                  */
@@ -33,7 +25,7 @@ return [
                 /*
                 * Edit to set path where swagger ui assets should be stored
                 */
-                'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'https://unpkg.com/swagger-ui-dist@5.10.3/'),
+                'swagger_ui_assets_path' => env('L5_SWAGGER_UI_ASSETS_PATH', 'vendor/swagger-api/swagger-ui/dist/'),
 
                 /*
                  * File name of the generated json documentation file
@@ -101,7 +93,7 @@ return [
             /*
              * Edit to set the api's base path
              */
-            'base' => env('L5_SWAGGER_BASE_PATH', null),
+            'base' => env('L5_SWAGGER_BASE_PATH', '/api/mariama/v1'),
 
             /*
              * Absolute path to directories that should be excluded from scanning
@@ -118,8 +110,8 @@ return [
              * @link https://zircote.github.io/swagger-php/reference/processors.html
              */
             'default_processors_configuration' => [
-                /** Example */
-                /**
+            /** Example */
+            /**
              * 'operationId.hash' => true,
              * 'pathFilter' => [
              * 'tags' => [
@@ -179,65 +171,18 @@ return [
          * API security definitions. Will be generated into documentation file.
         */
         'securityDefinitions' => [
-            'securitySchemes' => [
-                /*
-                 * Examples of Security schemes
-                 */
-                /*
-                'api_key_security_example' => [ // Unique name of security
-                    'type' => 'apiKey', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
-                    'description' => 'A short description for security scheme',
-                    'name' => 'api_key', // The name of the header or query parameter to be used.
-                    'in' => 'header', // The location of the API key. Valid values are "query" or "header".
-                ],
-                'oauth2_security_example' => [ // Unique name of security
-                    'type' => 'oauth2', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
-                    'description' => 'A short description for oauth2 security scheme.',
-                    'flow' => 'implicit', // The flow used by the OAuth2 security scheme. Valid values are "implicit", "password", "application" or "accessCode".
-                    'authorizationUrl' => 'http://example.com/auth', // The authorization URL to be used for (implicit/accessCode)
-                    //'tokenUrl' => 'http://example.com/auth' // The authorization URL to be used for (password/application/accessCode)
-                    'scopes' => [
-                        'read:projects' => 'read your projects',
-                        'write:projects' => 'modify projects in your account',
-                    ]
-                ],
-                */
-
-                /* Open API 3.0 support
-                'passport' => [ // Unique name of security
-                    'type' => 'oauth2', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
-                    'description' => 'Laravel passport oauth2 security.',
-                    'in' => 'header',
-                    'scheme' => 'https',
-                    'flows' => [
-                        "password" => [
-                            "authorizationUrl" => config('app.url') . '/oauth/authorize',
-                            "tokenUrl" => config('app.url') . '/oauth/token',
-                            "refreshUrl" => config('app.url') . '/token/refresh',
-                            "scopes" => []
-                        ],
-                    ],
-                ],
-                'sanctum' => [ // Unique name of security
-                    'type' => 'apiKey', // Valid values are "basic", "apiKey" or "oauth2".
-                    'description' => 'Enter token in format (Bearer <token>)',
-                    'name' => 'Authorization', // The name of the header or query parameter to be used.
-                    'in' => 'header', // The location of the API key. Valid values are "query" or "header".
-                ],
-                */],
+        'securitySchemes' => [
+            'bearerAuth' => [
+                'type' => 'http',
+                'scheme' => 'bearer',
+                'bearerFormat' => 'JWT',
+                'description' => 'Enter your Bearer token in the format: Bearer {token}'
+            ],
+        ],
             'security' => [
-                /*
-                 * Examples of Securities
-                 */
                 [
-                    /*
-                    'oauth2_security_example' => [
-                        'read',
-                        'write'
-                    ],
-
-                    'passport' => []
-                    */],
+                    'bearerAuth' => []
+                ],
             ],
         ],
 
@@ -245,7 +190,7 @@ return [
          * Set this to `true` in development mode so that docs would be regenerated on each request
          * Set this to `false` to disable swagger generation on production
          */
-        'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', true),
+        'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', false),
 
         /*
          * Set this to `true` to generate a copy of documentation in yaml format
@@ -320,7 +265,7 @@ return [
          * Constants which can be used in annotations
          */
         'constants' => [
-            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'https://api.balde.mariama.com/api/v1'),
+            'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
         ],
     ],
 ];

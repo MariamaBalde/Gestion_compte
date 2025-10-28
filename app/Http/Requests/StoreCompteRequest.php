@@ -4,6 +4,45 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="StoreCompteRequest",
+ *     title="Store Compte Request",
+ *     description="Requête de création d'un compte bancaire",
+ *     required={"client","type_compte","devise","statut"},
+ *     @OA\Property(
+ *         property="client",
+ *         type="object",
+ *         description="Informations du client",
+ *         required={"titulaire","nci","email","telephone","adresse"},
+ *         @OA\Property(property="titulaire", type="string", maxLength=255, example="Amadou Diallo"),
+ *         @OA\Property(property="nci", type="string", maxLength=20, example="1234567890123456"),
+ *         @OA\Property(property="email", type="string", format="email", example="amadou.diallo@email.com"),
+ *         @OA\Property(property="telephone", type="string", example="+221771234567"),
+ *         @OA\Property(property="adresse", type="string", example="Dakar, Plateau")
+ *     ),
+ *     @OA\Property(
+ *         property="type_compte",
+ *         type="string",
+ *         enum={"cheque","epargne","courant"},
+ *         example="epargne",
+ *         description="Type de compte bancaire"
+ *     ),
+ *     @OA\Property(
+ *         property="devise",
+ *         type="string",
+ *         example="FCFA",
+ *         description="Devise du compte"
+ *     ),
+ *     @OA\Property(
+ *         property="statut",
+ *         type="string",
+ *         enum={"actif","inactif","suspendu","bloque","ferme"},
+ *         example="actif",
+ *         description="Statut initial du compte"
+ *     )
+ * )
+ */
 class StoreCompteRequest extends FormRequest
 {
     public function authorize(): bool

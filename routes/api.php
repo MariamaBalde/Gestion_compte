@@ -32,5 +32,14 @@ Route::middleware('rating:10')->group(function(){
         });
 });
 
+// Swagger documentation route
+Route::get('/docs', function () {
+    return view('vendor.l5-swagger.index');
+});
 
 
+
+// Swagger documentation route
+Route::get('/docs', function () {
+    return view('vendor.l5-swagger.index');
+});
