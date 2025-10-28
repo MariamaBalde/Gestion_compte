@@ -21,6 +21,10 @@ else
     php artisan migrate --force
 fi
 
+# Generate Swagger documentation
+echo "Generating Swagger documentation..."
+php artisan l5-swagger:generate
+
 # Start Apache
 echo "Starting Apache..."
 apache2-foreground
