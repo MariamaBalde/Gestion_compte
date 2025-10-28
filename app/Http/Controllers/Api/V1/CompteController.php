@@ -27,7 +27,9 @@ use Illuminate\Support\Str;
  *     )
  * )
  * @OA\Server(
- *     url="http://localhost:8000",
+ *     url="https://gestion-compte-1izl.onrender.com",
+ *     description="Serveur de production"
+ * )
  *     description="Serveur de développement"
  * )
  * @OA\SecurityScheme(
