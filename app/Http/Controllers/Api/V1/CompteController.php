@@ -65,8 +65,7 @@ class CompteController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('numero_compte', 'ilike', "%{$search}%")
                   ->orWhereHas('client', function ($qc) use ($search) {
-                      $qc->where('nom', 'ilike', "%{$search}%")
-                         ->orWhere('prenom', 'ilike', "%{$search}%")
+                      $qc->where('titulaire', 'ilike', "%{$search}%")
                          ->orWhere('telephone', 'ilike', "%{$search}%");
                   });
             });

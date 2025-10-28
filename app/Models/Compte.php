@@ -97,4 +97,18 @@ public function clientByPhone(Builder $query, $telephone): Builder
     {
         return $this->belongsTo(Client::class, 'client_id');
     }
+
+    /** Relation vers Transactions */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'compte_id');
+    }
+
+    /** Calcul du solde basé sur les transactions */
+    public function getSoldeAttribute()
+    {
+        $debits = $this->transactions()->where('type_transaction', 'debit')->sum('montant');
+        $credits = $this->transactions()->where('type_transaction', 'credit')->sum('montant');
+        return $credits - $debits;
+    }
 }
