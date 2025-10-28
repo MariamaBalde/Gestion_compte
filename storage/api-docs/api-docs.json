@@ -10,8 +10,8 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000",
-            "description": "Serveur de développement"
+            "url": "https://gestion-compte-1izl.onrender.com",
+            "description": "Serveur de production"
         },
         {
             "url": "/api/mariama/v1"
