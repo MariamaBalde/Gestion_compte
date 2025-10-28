@@ -46,6 +46,7 @@ RUN php artisan l5-swagger:generate
 
 # Copy Swagger docs to public directory for production
 RUN cp storage/api-docs/api-docs.json public/api-docs.json
+RUN cp -r vendor/swagger-api/swagger-ui/dist/* public/docs/
 
 # Create .env file with production settings
 RUN echo "APP_NAME=Laravel" > /var/www/html/.env && \
