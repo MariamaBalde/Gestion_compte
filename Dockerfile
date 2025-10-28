@@ -46,6 +46,9 @@ RUN php artisan l5-swagger:generate
 
 # Copy Swagger docs to public directory for production
 RUN cp storage/api-docs/api-docs.json public/api-docs.json
+RUN mkdir -p public/docs
+RUN cp -r vendor/swagger-api/swagger-ui/dist/* public/docs/
+COPY public/docs/swagger-initializer.js public/docs/swagger-initializer.js
 RUN cp -r vendor/swagger-api/swagger-ui/dist/* public/docs/
 
 # Create .env file with production settings
