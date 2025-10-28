@@ -6,6 +6,28 @@ use App\Models\Compte;
 use App\Http\Requests\CompteIndexRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
+/**
+ * @OA\Schema(
+ *     schema="PaginationMeta",
+ *     title="Pagination Meta",
+ *     description="Métadonnées de pagination",
+ *     @OA\Property(property="currentPage", type="integer", example=1),
+ *     @OA\Property(property="totalPages", type="integer", example=5),
+ *     @OA\Property(property="totalItems", type="integer", example=50),
+ *     @OA\Property(property="itemsPerPage", type="integer", example=10),
+ *     @OA\Property(property="hasNext", type="boolean", example=true),
+ *     @OA\Property(property="hasPrevious", type="boolean", example=false)
+ * )
+ * @OA\Schema(
+ *     schema="PaginationLinks",
+ *     title="Pagination Links",
+ *     description="Liens de pagination",
+ *     @OA\Property(property="self", type="string", example="http://api.example.com/api/v1/comptes?page=1"),
+ *     @OA\Property(property="next", type="string", nullable=true, example="http://api.example.com/api/v1/comptes?page=2"),
+ *     @OA\Property(property="first", type="string", example="http://api.example.com/api/v1/comptes?page=1"),
+ *     @OA\Property(property="last", type="string", example="http://api.example.com/api/v1/comptes?page=5")
+ * )
+ */
 class CompteService
 {
     /**
