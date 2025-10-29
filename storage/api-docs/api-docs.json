@@ -4,13 +4,17 @@
         "title": "API RESTful Comptes Bancaires",
         "description": "Documentation complète de l'API RESTful pour la gestion des comptes bancaires",
         "contact": {
-            "email": "contact@banque.com"
+            "email": "support@banque.com"
         },
         "version": "1.0.0"
     },
     "servers": [
         {
-            "url": "https://gestion-compte-1izl.onrender.com",
+            "url": "http://localhost:8000/api",
+            "description": "Serveur de développement"
+        },
+        {
+            "url": "https://api.banque.com/api",
             "description": "Serveur de production"
         }
     ],
@@ -241,6 +245,29 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Données invalides",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Données invalides"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "description": "Non autorisé",
                         "content": {
@@ -262,7 +289,7 @@
                         }
                     },
                     "422": {
-                        "description": "Données de requête invalides",
+                        "description": "Erreur de validation",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -273,7 +300,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Données invalides"
+                                            "example": "Erreur de validation"
                                         },
                                         "errors": {
                                             "type": "object"
@@ -501,6 +528,116 @@
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/CompteResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non autorisé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Non autorisé"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Compte non trouvé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Compte non trouvé"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Comptes"
+                ],
+                "summary": "Supprimer un compte",
+                "description": "Supprime un compte bancaire actif avec solde nul et sans transactions récentes",
+                "operationId": "deleteCompte",
+                "parameters": [
+                    {
+                        "name": "compte",
+                        "in": "path",
+                        "description": "ID du compte",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Compte supprimé avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Compte supprimé avec succès"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Suppression non autorisée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Suppression non autorisée"
+                                        },
+                                        "errors": {
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -843,7 +980,7 @@
     "tags": [
         {
             "name": "Comptes",
-            "description": "Gestion des comptes bancaires"
+            "description": "Comptes"
         }
     ],
     "security": [

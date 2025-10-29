@@ -25,11 +25,16 @@ class Compte extends Model
         'solde',
         'devise',
         'statut',
+        'date_debut_blocage',
+        'date_fin_blocage',
+        'motif_blocage',
     ];
 
     
 
     protected $casts = [
+        'date_debut_blocage' => 'datetime',
+        'date_fin_blocage' => 'datetime',
     ];
 
     protected static function boot()
@@ -107,8 +112,15 @@ public function clientByPhone(Builder $query, $telephone): Builder
     /** Calcul du solde basé sur les transactions */
     public function getSoldeAttribute()
     {
+        // Dépôts (crédits) - Retraits (débits)
         $debits = $this->transactions()->where('type_transaction', 'debit')->sum('montant');
         $credits = $this->transactions()->where('type_transaction', 'credit')->sum('montant');
         return $credits - $debits;
+    }
+
+    /** Calcul du solde réel (stocké en base + transactions) */
+    public function getSoldeReelAttribute()
+    {
+        return $this->attributes['solde'] + $this->getSoldeAttribute();
     }
 }

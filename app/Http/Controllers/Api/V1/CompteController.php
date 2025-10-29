@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompteIndexRequest;
 use App\Http\Requests\StoreCompteRequest;
-use Illuminate\Http\Request;
+use App\Http\Requests\DeleteCompteRequest;
 use App\Http\Resources\CompteResource;
 use App\Models\Compte;
 use App\Models\Client;
@@ -12,10 +12,13 @@ use App\Models\User;
 use App\Traits\ApiResponse;
 use App\Services\CompteService;
 use App\Exceptions\CompteNotFoundException;
+use App\Services\NeonService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Event;
+use App\Events\ClientCreated;
 
 /**
  * @OA\Info(
@@ -23,14 +26,16 @@ use Illuminate\Support\Str;
  *     description="Documentation complète de l'API RESTful pour la gestion des comptes bancaires",
  *     version="1.0.0",
  *     @OA\Contact(
- *         email="contact@banque.com"
+ *         email="support@banque.com"
  *     )
  * )
  * @OA\Server(
- *     url="https://gestion-compte-1izl.onrender.com",
- *     description="Serveur de production"
- * )
+ *     url="http://localhost:8000/api",
  *     description="Serveur de développement"
+ * )
+ * @OA\Server(
+ *     url="https://api.banque.com/api",
+ *     description="Serveur de production"
  * )
  * @OA\SecurityScheme(
  *     securityScheme="bearerAuth",
@@ -38,11 +43,6 @@ use Illuminate\Support\Str;
  *     scheme="bearer",
  *     bearerFormat="JWT",
  *     description="Enter your Bearer token in the format: Bearer {token}"
- * )
- *
- * @OA\Tag(
- *     name="Comptes",
- *     description="Gestion des comptes bancaires"
  * )
  */
 class CompteController extends Controller
@@ -55,6 +55,7 @@ class CompteController extends Controller
     {
         $this->compteService = $compteService;
     }
+
 
     /**
      * @OA\Get(
@@ -250,6 +251,100 @@ class CompteController extends Controller
             'Comptes archivés récupérés avec succès'
         );
     }
+    /**
+     * @OA\Post(
+     *     path="/api/mariama/v1/comptes",
+     *     summary="Créer un nouveau compte",
+     *     description="Crée un nouveau compte bancaire avec les informations du client",
+     *     operationId="createCompte",
+     *     tags={"Comptes"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/StoreCompteRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Compte créé avec succès",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Compte créé avec succès"),
+     *             @OA\Property(property="data", ref="#/components/schemas/CompteResource")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Données invalides",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Données invalides"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Non autorisé",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Non autorisé")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erreur de validation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Erreur de validation"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     */
+    public function store(StoreCompteRequest $request)
+    {
+        try {
+            $validated = $request->validated();
+
+            // Créer ou récupérer le client
+            $client = Client::firstOrCreate(
+                ['nci' => $validated['client']['nci']],
+                [
+                    'titulaire' => $validated['client']['titulaire'],
+                    'email' => $validated['client']['email'],
+                    'telephone' => $validated['client']['telephone'],
+                    'adresse' => $validated['client']['adresse'],
+                    'password' => Hash::make(Str::random(10)),
+                    'code' => Str::random(6),
+                ]
+            );
+
+            // Créer le compte
+            $compte = Compte::create([
+                'client_id' => $client->id,
+                'type_compte' => $validated['type_compte'],
+                'devise' => $validated['devise'],
+                'statut' => $validated['statut'],
+                'solde' => $validated['soldeInitial'] ?? 0,
+            ]);
+
+            // Déclencher l'événement de création du client
+            // Event::dispatch(new ClientCreated($client));
+
+            return $this->successResponse(
+                new CompteResource($compte),
+                'Compte créé avec succès',
+                201
+            );
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de la création du compte', [
+                'error' => $e->getMessage(),
+                'data' => $request->all()
+            ]);
+
+            return $this->errorResponse('Erreur lors de la création du compte: ' . $e->getMessage(), 500);
+        }
+    }
+
 
     /**
      * @OA\Get(
@@ -295,6 +390,22 @@ class CompteController extends Controller
      */
     public function show(Compte $compte)
     {
+        // Si le compte est soft deleted (archivé), essayer de le récupérer depuis Neon
+        if ($compte->trashed()) {
+            $neonService = app(NeonService::class);
+            $archivedData = $neonService->getArchivedAccount($compte->id);
+
+            if ($archivedData) {
+                // Retourner les données depuis Neon avec un indicateur spécial
+                return $this->successResponse(
+                    array_merge($archivedData, ['source' => 'neon', 'archived' => true]),
+                    'Compte archivé récupéré depuis Neon avec succès'
+                );
+            }
+
+            throw new CompteNotFoundException('Compte archivé non trouvé dans Neon');
+        }
+
         return $this->successResponse(
             new CompteResource($compte),
             'Compte récupéré avec succès'
@@ -302,24 +413,35 @@ class CompteController extends Controller
     }
 
     /**
-     * @OA\Post(
-     *     path="/api/mariama/v1/comptes",
-     *     summary="Créer un nouveau compte",
-     *     description="Crée un nouveau compte bancaire avec les informations du client",
-     *     operationId="createCompte",
+     * @OA\Delete(
+     *     path="/api/mariama/v1/comptes/{compte}",
+     *     summary="Supprimer un compte",
+     *     description="Supprime un compte bancaire actif avec solde nul et sans transactions récentes",
+     *     operationId="deleteCompte",
      *     tags={"Comptes"},
      *     security={{"bearerAuth":{}}},
-     *     @OA\RequestBody(
+     *     @OA\Parameter(
+     *         name="compte",
+     *         in="path",
+     *         description="ID du compte",
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/StoreCompteRequest")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
-     *         response=201,
-     *         description="Compte créé avec succès",
+     *         response=200,
+     *         description="Compte supprimé avec succès",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Compte créé avec succès"),
-     *             @OA\Property(property="data", ref="#/components/schemas/CompteResource")
+     *             @OA\Property(property="message", type="string", example="Compte supprimé avec succès")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Suppression non autorisée",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Suppression non autorisée"),
+     *             @OA\Property(property="errors", type="object")
      *         )
      *     ),
      *     @OA\Response(
@@ -331,41 +453,27 @@ class CompteController extends Controller
      *         )
      *     ),
      *     @OA\Response(
-     *         response=422,
-     *         description="Données de requête invalides",
+     *         response=404,
+     *         description="Compte non trouvé",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Données invalides"),
-     *             @OA\Property(property="errors", type="object")
+     *             @OA\Property(property="message", type="string", example="Compte non trouvé")
      *         )
      *     )
      * )
      */
-    public function store(StoreCompteRequest $request)
+    public function destroy(DeleteCompteRequest $request, Compte $compte)
     {
         try {
-            $validated = $request->validated();
-
-            // Créer le client
-            $client = Client::create($validated['client']);
-
-            // Créer le compte
-            $compte = Compte::create([
-                'client_id' => $client->id,
-                'numero_compte' => $validated['numero_compte'] ?? null,
-                'type_compte' => $validated['type_compte'],
-                'solde' => 0,
-                'devise' => $validated['devise'],
-                'statut' => $validated['statut'],
-            ]);
+            // La validation est faite dans DeleteCompteRequest
+            $compte->delete();
 
             return $this->successResponse(
-                new CompteResource($compte->load('client')),
-                'Compte créé avec succès',
-                201
+                null,
+                'Compte supprimé avec succès'
             );
         } catch (\Exception $e) {
-            return $this->errorResponse('Erreur lors de la création du compte', 500);
+            return $this->errorResponse('Erreur lors de la suppression du compte', 500);
         }
     }
 }

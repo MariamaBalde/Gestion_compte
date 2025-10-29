@@ -70,6 +70,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
     // ...
     'rating' => \App\Http\Middleware\RatingMiddleware::class,
+    'logging' => \App\Http\Middleware\LoggingMiddleware::class,
 ];
 
 }

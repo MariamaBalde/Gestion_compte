@@ -55,13 +55,14 @@ class StoreCompteRequest extends FormRequest
         return [
             'client' => 'required|array',
             'client.titulaire' => 'required|string|max:255',
-            'client.nci' => 'required|string|unique:client,nci',
+            'client.nci' => 'required|string',
             'client.email' => 'required|email|unique:client,email',
-            'client.telephone' => 'required|string|unique:client,telephone',
+            'client.telephone' => 'required|string',
             'client.adresse' => 'required|string|max:500',
             'type_compte' => 'required|in:cheque,epargne,courant',
             'devise' => 'required|string|max:5',
             'statut' => 'required|in:actif,inactif,suspendu',
+            'soldeInitial' => 'sometimes|numeric|min:10000',
         ];
     }
 
@@ -71,11 +72,13 @@ class StoreCompteRequest extends FormRequest
             'client.required' => 'Les informations du client sont obligatoires.',
             'client.titulaire.required' => 'Le titulaire est obligatoire.',
             'client.nci.required' => 'Le numéro de carte d\'identité est obligatoire.',
+            'client.nci.regex' => 'Le numéro de carte d\'identité doit être au format sénégalais (13 chiffres + 2 lettres + 2 chiffres).',
             'client.nci.unique' => 'Ce numéro de carte d\'identité est déjà utilisé.',
             'client.email.required' => 'L\'email est obligatoire.',
             'client.email.email' => 'L\'email doit être valide.',
             'client.email.unique' => 'Cet email est déjà utilisé.',
             'client.telephone.required' => 'Le téléphone est obligatoire.',
+            'client.telephone.regex' => 'Le numéro de téléphone doit être au format sénégalais (+221 ou 221 suivi de 7 chiffres commençant par 7, 6 ou 8).',
             'client.telephone.unique' => 'Ce téléphone est déjà utilisé.',
             'client.adresse.required' => 'L\'adresse est obligatoire.',
             'type_compte.required' => 'Le type de compte est obligatoire.',
@@ -84,6 +87,7 @@ class StoreCompteRequest extends FormRequest
             'devise.max' => 'La devise ne peut pas dépasser 5 caractères.',
             'statut.required' => 'Le statut est obligatoire.',
             'statut.in' => 'Le statut doit être actif, inactif ou suspendu.',
+            'soldeInitial.min' => 'Le solde initial doit être d\'au moins 10 000 FCFA.',
         ];
     }
 }
