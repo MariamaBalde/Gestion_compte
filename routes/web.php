@@ -18,22 +18,24 @@ Route::get('/', function () {
         'message' => 'API de gestion de comptes - Bienvenue',
         'version' => '1.0.0',
         'status' => 'operational',
-        'documentation' => url('/api/documentation'),
         'endpoints' => [
             'comptes' => url('/api/v1/comptes'),
-        ]
+        ],
+        'documentation' => url('/api/docs')
     ]);
 });
-
-Route::get('/api/docs', function () {
-    return view('swagger');
+// Swagger documentation route
+Route::get('/docs', function () {
+    return view('vendor.l5-swagger.index', [
+        'documentation' => 'default',
+        'urlToDocs' => route('l5-swagger.default.docs'),
+        'configUrl' => config('l5-swagger.defaults.additional_config_url'),
+        'validatorUrl' => config('l5-swagger.defaults.validator_url'),
+        'operationsSorter' => config('l5-swagger.defaults.operations_sort'),
+    ]);
 });
-
-Route::get('/api/documentation', function () {
-    return view('swagger');
-})->name('l5-swagger.default.api');
-
-Route::get('/api-docs.json', function () {
-    return response()->file(storage_path('api-docs/api-docs.json'));
+// Swagger documentation route
+Route::get('/docs', function () {
+    return view('vendor.l5-swagger.index', ['documentation' => 'default']);
 });
 

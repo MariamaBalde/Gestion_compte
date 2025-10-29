@@ -41,6 +41,16 @@ RUN npm install && npm run build
 # Generate application key
 RUN php artisan key:generate --show | grep -o 'base64:[^"]*' | cut -d':' -f2 > /tmp/app_key.txt
 
+# Generate Swagger documentation
+RUN php artisan l5-swagger:generate
+
+# Copy Swagger docs to public directory for production
+RUN cp storage/api-docs/api-docs.json public/api-docs.json
+RUN mkdir -p public/docs
+RUN cp -r vendor/swagger-api/swagger-ui/dist/* public/docs/
+COPY public/docs/swagger-initializer.js public/docs/swagger-initializer.js
+RUN cp -r vendor/swagger-api/swagger-ui/dist/* public/docs/
+
 # Create .env file with production settings
 RUN echo "APP_NAME=Laravel" > /var/www/html/.env && \
     echo "APP_ENV=production" >> /var/www/html/.env && \

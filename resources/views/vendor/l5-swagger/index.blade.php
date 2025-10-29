@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{config('l5-swagger.documentations.'.$documentation.'.api.title')}}</title>
-    <link rel="stylesheet" type="text/css" href="{{ l5_swagger_asset($documentation, 'swagger-ui.css') }}">
-    <link rel="icon" type="image/png" href="{{ l5_swagger_asset($documentation, 'favicon-32x32.png') }}" sizes="32x32"/>
-    <link rel="icon" type="image/png" href="{{ l5_swagger_asset($documentation, 'favicon-16x16.png') }}" sizes="16x16"/>
+    <title>{{config('l5-swagger.documentations.default.api.title')}}</title>
+    <link rel="stylesheet" type="text/css" href="{{ l5_swagger_asset('default', 'swagger-ui.css') }}">
+    <link rel="icon" type="image/png" href="{{ l5_swagger_asset('default', 'favicon-32x32.png') }}" sizes="32x32"/>
+    <link rel="icon" type="image/png" href="{{ l5_swagger_asset('default', 'favicon-16x16.png') }}" sizes="16x16"/>
     <style>
     html
     {
@@ -119,18 +119,18 @@
 <body @if(config('l5-swagger.defaults.ui.display.dark_mode')) id="dark-mode" @endif>
 <div id="swagger-ui"></div>
 
-<script src="{{ l5_swagger_asset($documentation, 'swagger-ui-bundle.js') }}"></script>
-<script src="{{ l5_swagger_asset($documentation, 'swagger-ui-standalone-preset.js') }}"></script>
+<script src="{{ l5_swagger_asset('default', 'swagger-ui-bundle.js') }}"></script>
+<script src="{{ l5_swagger_asset('default', 'swagger-ui-standalone-preset.js') }}"></script>
 <script>
     window.onload = function() {
         // Build a system
         const ui = SwaggerUIBundle({
             dom_id: '#swagger-ui',
-            url: "{!! $urlToDocs !!}",
-            operationsSorter: {!! isset($operationsSorter) ? '"' . $operationsSorter . '"' : 'null' !!},
-            configUrl: {!! isset($configUrl) ? '"' . $configUrl . '"' : 'null' !!},
-            validatorUrl: {!! isset($validatorUrl) ? '"' . $validatorUrl . '"' : 'null' !!},
-            oauth2RedirectUrl: "{{ route('l5-swagger.'.$documentation.'.oauth2_callback', [], $useAbsolutePath) }}",
+            url: "/api-docs.json",
+            operationsSorter: {!! config('l5-swagger.defaults.operations_sort') ? '"' . config('l5-swagger.defaults.operations_sort') . '"' : 'null' !!},
+            configUrl: {!! config('l5-swagger.defaults.additional_config_url') ? '"' . config('l5-swagger.defaults.additional_config_url') . '"' : 'null' !!},
+            validatorUrl: {!! config('l5-swagger.defaults.validator_url') ? '"' . config('l5-swagger.defaults.validator_url') . '"' : 'null' !!},
+            oauth2RedirectUrl: "{{ route('l5-swagger.default.oauth2_callback', [], config('l5-swagger.defaults.paths.use_absolute_path', true)) }}",
 
             requestInterceptor: function(request) {
                 request.headers['X-CSRF-TOKEN'] = '{{ csrf_token() }}';
