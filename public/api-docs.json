@@ -10,12 +10,8 @@
     },
     "servers": [
         {
-            "url": "https://gestion-compte-1izl.onrender.com/api/mariama/v1",
+            "url": "https://gestion-compte-1izl.onrender.com",
             "description": "Serveur de production"
-        },
-        {
-            "url": "http://localhost:8000/api/mariama/v1",
-            "description": "Serveur local"
         }
     ],
     "paths": {

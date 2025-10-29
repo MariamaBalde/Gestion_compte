@@ -93,7 +93,7 @@ return [
             /*
              * Edit to set the api's base path
              */
-            'base' => env('L5_SWAGGER_BASE_PATH', '/api/mariama/v1'),
+            'base' => env('L5_SWAGGER_BASE_PATH', null),
 
             /*
              * Absolute path to directories that should be excluded from scanning

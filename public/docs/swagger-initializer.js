@@ -1,6 +1,8 @@
 window.onload = function() {
-  // Begin Swagger UI call region
-  const ui = SwaggerUIBundle({
+  //<editor-fold desc="Changeable Configuration Block">
+
+  // the following lines will be replaced by docker/configurator, when it runs in a docker-container
+  window.ui = SwaggerUIBundle({
     url: "/api-docs.json",
     dom_id: '#swagger-ui',
     deepLinking: true,
@@ -13,6 +15,6 @@ window.onload = function() {
     ],
     layout: "StandaloneLayout"
   });
-  // End Swagger UI call region
-  window.ui = ui;
+
+  //</editor-fold>
 };
