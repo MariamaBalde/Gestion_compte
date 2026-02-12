@@ -1,0 +1,50 @@
+<?php
+namespace App\Http\Controllers\Api\V1;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CompteIndexRequest;
+use App\Http\Requests\StoreCompteRequest;
+use Illuminate\Http\Request;
+use App\Http\Resources\CompteResource;
+use App\Models\Compte;
+use App\Models\Client;
+use App\Models\User;
+use App\Traits\ApiResponse;
+use App\Services\CompteService;
+use App\Exceptions\CompteNotFoundException;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+
+/**
+ * @OA\Info(
+ *     title="API RESTful Comptes Bancaires",
+ *     description="Documentation complète de l'API RESTful pour la gestion des comptes bancaires",
+ *     version="1.0.0",
+ *     @OA\Contact(
+ *         email="contact@banque.com"
+ *     )
+ * )
+ * @OA\Server(
+ *     url="http://localhost:8000",
+ *     description="Serveur de développement"
+ * )
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     description="Enter your Bearer token in the format: Bearer {token}"
+ * )
+ */
+class CompteController extends Controller
+{
+    use ApiResponse;
+
+    protected CompteService $compteService;
+
+    public function __construct(CompteService $compteService)
+    {
+        $this->compteService = $compteService;
+    }

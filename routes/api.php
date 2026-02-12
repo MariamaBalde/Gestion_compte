@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\CompteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +17,29 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+// Lister tous les comptes (Admin) ou comptes du client (Client)
+// GET /mariama/v1/comptes?page=1&limit=10&type=epargne&statut=actif&search=...&sort=dateCreation&order=desc
+// Récupérer un compte spécifique (Admin/Client)
+// GET /mariama/v1/comptes/{compteId}
+Route::middleware('rating:10')->group(function(){
+        Route::prefix(config('balde.mariama') . '/v1')->group(function() {
+        Route::get('comptes', [CompteController::class, 'index']);
+        Route::get('comptes/archived', [CompteController::class, 'archived']);
+        Route::get('comptes/{compte}', [CompteController::class, 'show']);
+        Route::post('comptes', [CompteController::class, 'store']);
+        });
+});
+
+// Swagger documentation route
+Route::get('/docs', function () {
+    return view('vendor.l5-swagger.index');
+});
+
+
+
+// Swagger documentation route
+Route::get('/docs', function () {
+    return view('vendor.l5-swagger.index');
 });
